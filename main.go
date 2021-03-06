@@ -33,6 +33,7 @@ func main() {
 		go func() {
 			timer := 1500 // 	默认时间值
 			state := -1
+			bigBreakState := 0 //	大休息区间
 			for {
 				select {
 				case <-time.After(1 * time.Second):
@@ -41,6 +42,9 @@ func main() {
 					}
 					//	当处于工作或者休息时才会在结束时更新状态
 					if timer <= 0 && state%2 == 1 {
+						if state%4 == 1 {
+							bigBreakState++
+						}
 						state = (state + 1) % 4
 						itemStop.SetHidden(state%2 == 0)
 					}
@@ -51,12 +55,23 @@ func main() {
 					} else {
 						countdown = false
 					}
-					timer = map[int]int{
-						0: 0,
-						1: 2700,
-						2: 0,
-						3: 300,
-					}[state]
+					if bigBreakState == 4 {
+						timer = map[int]int{
+							0: 0,
+							1: 1500,
+							2: 0,
+							3: 1500,
+						}[state]
+						bigBreakState = 0 //	状态清零
+					} else {
+						timer = map[int]int{
+							0: 0,
+							1: 1500,
+							2: 0,
+							3: 300,
+						}[state]
+					}
+
 				}
 				labels := map[int]string{
 					0: "▶️ Ready 2 go ?",
