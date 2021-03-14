@@ -60,7 +60,7 @@ func main() {
 							0: 0,
 							1: 1500,
 							2: 0,
-							3: 1500,
+							3: 900,
 						}[state]
 						bigBreakState = 0 //	状态清零
 					} else {
